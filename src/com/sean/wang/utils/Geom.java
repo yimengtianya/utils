@@ -1,6 +1,7 @@
 package com.sean.wang.utils;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class Geom{
 	public static double distSq(double[] p1, double[] p2){
@@ -68,34 +69,78 @@ public class Geom{
 		return Math.abs(area);
 	}
 	
-	public double circumRadius(double[][] triangle) {
-		double[] p1 = triangle[0];
-		double[] p2 = triangle[1];
-		double[] p3 = triangle[2];
-		double a1 = p2[0] - p1[0];
-		double b1 = p2[1] - p1[1];
-		double c1 = (p2[0] * p2[0] - p1[0] * p1[0] + p2[1] * p2[1] - p1[1]
-				* p1[1]) / 2.0;
-		double a2 = p3[0] - p2[0];
-		double b2 = p3[1] - p2[1];
-		double c2 = (p3[0] * p3[0] - p2[0] * p2[0] + p3[1] * p3[1] - p2[1]
-				* p2[1]) / 2.0;
-		double center_y = (c1 * a2 - c2 * a1) / (a2 * b1 - a1 * b2);
-		double center_x = (c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1);
-		DecimalFormat format = new DecimalFormat("000.00");
-		center_x = Double.valueOf(format.format(center_x));
-		center_y = Double.valueOf(format.format(center_y));
-
-		return Math.sqrt(Math.pow(p1[0] - center_x, 2)
-				+ Math.pow(p1[1] - center_y, 2));
+	public static boolean counterClockwise(double[][] elem){
+		double[] center = centroid(elem);
+		boolean counter = true;
+		for(int i = 0, len = elem.length; i < len; i++){
+			double[] line1 = {elem[i][0] - center[0], elem[i][1] - center[1]};
+			double[] line2 = {elem[(i + 1) % len][0] - center[0], elem[(i + 1) % len][1] - center[1]};
+			counter = line1[0] * line2[1] - line1[1] * line2[0] > 0;
+		}
+		return counter;
 	}
 	
+	
 	public static class Triangle{
-		public static double[] circumCenterOf(double[][] triangle){
-			return null;
+		public static boolean  inCircumCircleOf(double[][] triangle, double[] p){
+			double[] p1 = triangle[0];
+			double[] p2 = triangle[1];
+			double[] p3 = triangle[2];
+			double a1 = p2[0] - p1[0];
+			double b1 = p2[1] - p1[1];
+			double c1 = (p2[0] * p2[0] - p1[0] * p1[0] + p2[1] * p2[1] - p1[1]
+					* p1[1]) / 2.0;
+			double a2 = p3[0] - p2[0];
+			double b2 = p3[1] - p2[1];
+			double c2 = (p3[0] * p3[0] - p2[0] * p2[0] + p3[1] * p3[1] - p2[1]
+					* p2[1]) / 2.0;
+			double center_y = (c1 * a2 - c2 * a1) / (a2 * b1 - a1 * b2);
+			double center_x = (c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1);
+			return Math.pow(p1[0] - center_x, 2) + Math.pow(p1[1] - center_y, 2) > Math
+					.pow(p[0] - center_x, 2) + Math.pow(p[1] - center_y, 2);
 		}
 		public static boolean inCircumCircle(double[][] triangle, double[] p){
-			return false;
+			double[] p1 = {triangle[0][0], triangle[0][1], triangle[0][0] * triangle[0][0] + triangle[0][1] * triangle[0][1]};
+			double[] p2 = {triangle[1][0], triangle[1][1], triangle[1][0] * triangle[1][0] + triangle[1][1] * triangle[1][1]};
+			double[] p3 = {triangle[2][0], triangle[2][1], triangle[2][0] * triangle[2][0] + triangle[2][1] * triangle[2][1]};
+			double a = (p2[1] - p1[1]) * (p3[2] - p1[2]) - (p3[1] - p1[1]) * (p2[2] - p1[2]);
+			double b = - (p2[0] - p1[0]) * (p3[2] - p1[2]) + (p3[0] - p1[0]) * (p2[2] - p1[2]);
+			double c = (p2[0]- p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]);
+			p = new double[]{p[0], p[1], p[0] * p[0] + p[1] * p[1]};
+			double result = a * (p[0] - p1[0]) + b * (p[1] - p1[1]) + c * (p[2] - p1[2]);
+			return (result < 0 && c > 0) || (result > 0 && c < 0);
+		}
+		
+		public static double circumRadius(double[][] triangle) {
+			double[] p1 = triangle[0];
+			double[] p2 = triangle[1];
+			double[] p3 = triangle[2];
+			double a1 = p2[0] - p1[0];
+			double b1 = p2[1] - p1[1];
+			double c1 = (p2[0] * p2[0] - p1[0] * p1[0] + p2[1] * p2[1] - p1[1]
+					* p1[1]) / 2.0;
+			double a2 = p3[0] - p2[0];
+			double b2 = p3[1] - p2[1];
+			double c2 = (p3[0] * p3[0] - p2[0] * p2[0] + p3[1] * p3[1] - p2[1]
+					* p2[1]) / 2.0;
+			double center_y = (c1 * a2 - c2 * a1) / (a2 * b1 - a1 * b2);
+			double center_x = (c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1);
+			DecimalFormat format = new DecimalFormat("000.00");
+			center_x = Double.valueOf(format.format(center_x));
+			center_y = Double.valueOf(format.format(center_y));
+
+			return Math.sqrt(Math.pow(p1[0] - center_x, 2)
+					+ Math.pow(p1[1] - center_y, 2));
 		}
 	}
+	
+	public static class Polygon{
+		public static boolean isValid(List<double[]> points, List<int[]> segments){
+			if(points.size() != segments.size())
+				return false;
+			
+			return true;
+		}
+	}
+	
 }

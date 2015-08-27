@@ -1,5 +1,6 @@
 package com.sean.wang.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,52 @@ public class ArrUtil<T> {
 		return sum;
 	}
 
+	public static double[] sum(double[][] arr){
+		int col = arr[0].length;
+		double[] result =  new double[col];
+		for(int i = 0, len = arr.length; i < len; i++){
+			for(int j = 0; j < col; j++){
+				result[j] += arr[i][j];
+			}
+		}
+		return result;
+	}
+	
+	public static double[] add(double[] ar1, double[] ar2){
+		double[] result = new double[ar1.length];
+		for(int i = 0, len = ar1.length; i < len; i++){
+			result[i] = ar1[i] + ar2[i];
+		}
+		return result;
+	}
+	
+	public static double[] mul(double[] arr, double value){
+		double[] result = new double[arr.length];
+		for(int i = 0, len = arr.length; i < len; i++)
+			result[i] = arr[i] * value;
+		return result;
+	}
+	public static double[][] mul(double[][] arr, double[] values){
+		double[][] result = new double[arr.length][];
+		for(int i = 0, len = arr.length; i < len; i++){
+			double[] r = new double[arr[i].length];
+			for(int j = 0; j < r.length; j++){
+				r[j] = arr[i][j] * values[i];
+			}
+			result[i] = r;
+		}
+		return result;
+	}
+	
+	public static double cdot(double[] ar1, double[] ar2){
+		if(ar1.length != ar2.length)
+			return 0;
+		double[] arr = new double[ar1.length];
+		for(int i = 0, len = ar1.length; i < len; i++)
+			arr[i] = ar1[i] * ar2[i];
+		return sum(arr);
+	}
+	
 	public static int[] toArray1(int[][] arr){
 		int[] result = new int[arr.length * arr[0].length];
 		int k = 0;
@@ -42,6 +89,24 @@ public class ArrUtil<T> {
 			}
 		}
 		return result;
+	}
+	public static double[][] toArrayNd(double[] arr, int n){
+	
+		double[][] result = new double[arr.length / n][n];
+		for(int i = 0, len = result.length; i < len; i++){
+			for(int j = 0; j < n; j++){
+				result[i][j] = arr[i * n + j];
+			}
+		}
+		return result;
+	}
+	
+	public static String toString(double[][] arr){
+		String str = "";
+		for(double[] d:arr){
+			str += Arrays.toString(d) + "\r\n";
+		}
+		return str;
 	}
 	public static int count(int[] arr, int t){
 		int count = 0;
@@ -86,6 +151,13 @@ public class ArrUtil<T> {
 			}
 		}
 		return min;
+	}
+	
+	public static double min(double[] arr){
+		double result = Double.MAX_VALUE;
+		for(int i = 0, len = arr.length; i < len; i++)
+			result = (result < arr[i])?result:arr[i];
+		return result;
 	}
 	public static boolean equal(double[] d1, double[] d2){
 		if(d1.length != d2.length){
@@ -230,4 +302,119 @@ public class ArrUtil<T> {
 		return result;
 	}
 	
+	public static double squareSum(double[] arr){
+		double result = 0;
+		for(double a:arr)
+			result += a * a;
+		return result;
+	}
+	
+	public static List<double[]> toListdn(double[] arr, int n){
+		List<double[]> result = new ArrayList<>();
+		for(int i = 0, len = arr.length / n; i < len; i++){
+			double[] ar = new double[n];
+			for(int j = 0; j < n; j++){
+				ar[j] = arr[i * n + j];
+			}
+			result.add(ar);
+		}
+		return result;
+	}
+
+	public static List<int[]> toListin(int[] arr, int n){
+		List<int[]> result = new ArrayList<>();
+		for(int i = 0, len = arr.length / n; i < len; i++){
+			int[] ar = new int[n];
+			for(int j = 0; j < n; j++){
+				ar[j] = arr[i * n + j];
+			}
+			result.add(ar);
+		}
+		return result;
+	}
+	
+	public static int binarySearch(double[] arr, double value){
+		if(arr == null)
+			return -1;
+		int lower = 0;
+		int upper = arr.length - 1;
+		if(arr[lower] == value)
+			return lower;
+		if(arr[upper] == value)
+			return upper;
+		while(upper - lower > 1){
+			int pivot = (lower + upper) / 2;
+			if(arr[pivot] == value)
+				return pivot;
+			
+			if(arr[pivot] > value)
+				upper = pivot;
+			else 
+				lower = pivot;
+		}
+		return -1;
+	}
+	public static int[] binarySearchEx(double[] arr, double value){
+		if(arr == null || arr.length <= 1){
+			return null;
+		}
+		int lower = 0;
+		int upper = arr.length - 1;
+		
+		if(arr[lower] == value)
+			return new int[]{lower};
+		if(arr[upper] == value)
+			return new int[]{upper};
+		if(arr[lower] > value)
+			return new int[]{-1, lower};
+		if(arr[upper] < value)
+			return new int[]{upper, -1};
+		while(upper - lower > 1){
+			int pivot = (lower + upper) / 2;
+			if(arr[pivot] == value)
+				return new int[]{pivot};
+			if(arr[pivot] > value)
+				upper = pivot;
+			else
+				lower = pivot;
+			
+		}
+		return new int[]{lower, upper};
+	}
+	
+	public static double[] merge(double[] ar1, double[] ar2){
+		double[] result = new double[ar1.length + ar2.length];
+		for(int i = 0, len = ar1.length; i < len; i++)
+			result[i] = ar1[i];
+		for(int i = 0, len = ar2.length; i < len; i++)
+			result[i + ar1.length] = ar2[i];
+		return result;
+	}
+	
+	public static double[] toArray(List<Double> list){
+		double[] result = new double[list.size()];
+		for(int i = 0, len = list.size(); i < len; i++)
+			result[i] = list.get(i);
+		return result;
+	}
+	
+	public static <T> T[] toArray(List<T> list, Class<T> t){
+		Class<T> type = t;
+		@SuppressWarnings("unchecked")
+		T[] result = (T[]) Array.newInstance(type, list.size());
+		for(int i = 0, len = list.size(); i < len; i++){
+			result[i] = list.get(i);
+		}
+		return result;
+	}
+	
+	public static double[] extract(double[][] arr, int col){
+		List<Double> list = new ArrayList<>();
+		for(int i = 0, len = arr.length; i < len; i++){
+			if(arr[i] == null || arr[i].length <= col)
+				continue;
+			list.add(arr[i][col]);	
+		}
+		return toArray(list);
+	}
 }

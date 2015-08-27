@@ -1,5 +1,6 @@
 package com.sean.wang.utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Sort {
@@ -88,5 +89,82 @@ public class Sort {
 			right--;
 		}
 		return left;
+	}
+	
+	public static void insertionSort(double[] arr){
+		insertionSort(arr, true);
+	}
+
+	public static void insertionSort(double[] arr, boolean up) {
+		if (arr == null || arr.length == 0)
+			return;
+		for (int i = 1, len = arr.length; i < len; i++) {
+			double temp = arr[i];
+			boolean logic;
+			logic = up?temp > arr[i - 1]:temp < arr[i - 1];
+			if (logic)
+				continue;
+			int count = 0;
+			for (int j = i - 1; j >= 0; j--) {
+				logic = up?arr[j] > temp:arr[j] < temp;
+				if (logic)
+					count++;
+			}
+			int index = i;
+			for (int k = 0; k < count; k++) {
+				arr[index] = arr[index - 1];
+				index--;
+			}
+			arr[index] = temp;
+		}
+	}
+	
+	public static void mergeSort(double[] arr){
+		if(arr == null || arr.length <= 1)
+			return;
+		mergeSort(arr, 0, arr.length - 1);
+		
+	}
+	public static void mergeSort(double[] arr, int m, int n){
+		if(n - m == 0)
+			return;
+		if(n - m == 1){
+			if(arr[m] > arr[n]){
+				double temp = arr[m];
+				arr[m] = arr[n];
+				arr[n] = temp;
+			}
+			return;
+		}
+		int piv = (n + m) / 2;
+		mergeSort(arr, m , piv);
+		mergeSort(arr, piv + 1, n);
+		merge(arr, m, piv, n);
+	}
+	
+	public static void merge(double[] arr, int p, int q, int r){
+		double[] ar1 = new double[q - p + 1 + 1];
+		double[] ar2 = new double[r - q + 1];
+		for(int i = 0, len = ar1.length - 1; i < len; i++){
+			ar1[i] = arr[p + i];
+		}
+		for(int i = 0, len = ar2.length - 1; i < len; i++){
+			ar2[i] = arr[q + i + 1];
+		}
+		ar1[ar1.length - 1] = Double.MAX_VALUE;
+		ar2[ar2.length - 1] = Double.MAX_VALUE;
+		int k1 = 0;
+		int k2 = 0;
+		for(int i = p; i <= r; i++){
+			if(ar1[k1] > ar2[k2]){
+				arr[i] = ar2[k2];
+				k2++;
+			}else{
+				arr[i] = ar1[k1];
+				k1++;
+			}
+		}
+		
+		
 	}
 }
