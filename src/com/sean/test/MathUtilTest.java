@@ -29,7 +29,7 @@ public class MathUtilTest extends TestCase{
 	}
 	
 	public void testIntegral(){
-		double result = MathUtil.integral(e -> e*e*e * e, 0, 1, 0.1);
+		double result = MathUtil.integral(e -> e*e*e, 0, 1, 0.1);
 		System.out.println(result);
 		
 		double result2 = MathUtil.integral(e-> e* e* e * e, 0, 1, 10);
@@ -37,16 +37,16 @@ public class MathUtilTest extends TestCase{
 	}
 	
 	public void test(){
-		double result = MathUtil.integral(t -> f(t), 0, 0.04, 100);
-		System.out.println(result);
-		
-		double inc = 0.001;
-		for(double i = 0; i < 0.03;){
-			double u = u(25, 30, i);
-			double v = v(25, 30, i);
-			System.out.println(i + "\t" +u + "\t" + v);
-			i += inc;
-		}
+//		double result = MathUtil.integral(t -> f(t), 0, 0.04, 100);
+//		System.out.println(result);
+//		
+//		double inc = 0.001;
+//		for(double i = 0; i < 0.03;){
+//			double u = u(25, 30, i);
+//			double v = v(25, 30, i);
+//			System.out.println(i + "\t" +u + "\t" + v);
+//			i += inc;
+//		}
 
 	}
 	

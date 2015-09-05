@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.sean.wang.utils.ArrUtil;
 import com.sean.wang.utils.FileIO;
@@ -220,11 +221,28 @@ public class App {
 //		 long e = System.nanoTime();
 //		 System.out.println(e - s);
 	
-		Set<Integer> s = new HashSet<>();
-		s.add(1);
-		s.add(1);
-		s.add(1);
-		s.add(1);
+//		Set<Integer> s = new HashSet<>();
+//		s.add(1);
+//		s.add(1);
+//		s.add(1);
+//		s.add(1);
 	
+		double re  =new App().integral(e -> 1/Math.sqrt(Math.abs(e*e - 1)), -0.05, 1, 0.1);
+		System.out.println(re);
+	}
+	
+	public double integral(Function<Double, Double> f, double a, double b, double dx){
+		return sum(f, a+ dx / 2.0, b, dx) * dx;
+	}
+	private double sum(Function<Double, Double> f, double a, double b, double dx){
+		if(a >= b)
+			return 0;
+		System.out.println(f.apply(a));
+		System.out.println(a);
+		if(Double.isInfinite(f.apply(a))){
+			System.out.println("inif");
+			return sum(f, a + dx * (b - a) / 10000.0, b, dx);
+		}
+		return f.apply(a) + sum(f, a + dx, b, dx);
 	}
 }
