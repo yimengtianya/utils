@@ -59,6 +59,8 @@ public class MathUtil {
 		return TailCalls.call(() -> sum__(term, next.apply(a), next, b, result + term.apply(a)));
 	}
 	
+	
+	
 	public static double integral(Function<Double, Double> f, double a, double b, double dx){
 		Function<Double, Double> add_dx = (e -> e + dx);
 		return sum__(f, a + dx / 2.0, add_dx, b) * dx;
@@ -69,4 +71,51 @@ public class MathUtil {
 		return h / 3.0 * ( sum_(k -> k % 2 == 0 ? 2 * f.apply(a + k * h): 4 * f.apply(a + k * h), 1, e -> e + 1, n - 1) 
 				+ f.apply(a) + f.apply(a + n * h));
 	}
+	
+	public static double integral_trapezoid(Function<Double, Double> f, double a, double b, double dx) {
+		double h = dx;
+		Function<Double, Double> g = x -> (f.apply(x) + f.apply(x + h)) / 2.0;
+		return dx * sum__(g, a, e -> e + dx, b -dx);
+	}
+	
+	public static double integral_simpson(Function<Double, Double> f, double a, double b, int m) {
+		double h = (b - a) / (double) m;
+		double dx = h / 2.0;
+		Function<Integer, Double> g = i -> 1 / 6.0 * f.apply(a + (i - 1) * h) + 2 / 3.0 * f.apply(a + (i - 1) * h + dx) + 1 / 6.0 * f.apply(a + i * h);
+		return h * sum___(g, 1, e -> e + 1, m);
+	}
+	
+	public static double integral_cotes(Function<Double, Double> f, double a, double b, double dx){
+		double h = dx / 4.0;
+		Function<Double, Double> g = x -> 7 / 90.0 * f.apply(x) + 16 / 45.0 * f.apply(x + h) + 2 / 15.0 * f.apply(x + 2 * h)
+		 		+ 16 / 45.0 * f.apply(x + 3 * h) + 7 / 90.0 * f.apply(x + dx);
+		return dx * sum__(g, a, e -> e + dx, b - dx);
+	}
+	
+	public static double integral_cotes(Function<Double, Double> f, double a, double b, int m) {
+		double h = (b - a) / (double) m;
+		double dx = h / 4.0;
+		Function<Integer, Double> g = i -> 7 / 90.0 * f.apply(a + (i - 1) * h) + 16 / 45.0 * f.apply(a + (i - 1) * h + dx)
+		 + 2 / 15.0 * f.apply(a + (i - 1) * h + 2 * dx) + 16 / 45.0 * f.apply(a + (i - 1) * h + 3 * dx) + 7 / 90.0 * f.apply(a + i * h);
+		return h * sum___(g, 1, e -> e + 1, m);
+	} 
+	
+	private static double sum___(Function<Integer, Double> term, int min, Function<Integer, Integer> next, int max){
+		return sum___(term, min, next, max, 0).invoke();
+	}
+	private static TailCall<Double> sum___(Function<Integer, Double> term, int min, Function<Integer, Integer> next, int max, double result) {
+		if(min > max) {
+			return TailCalls.done(result);
+		}
+		return TailCalls.call(() -> sum___(term, next.apply(min), next, max, result + term.apply(min)));
+	}
+	
+	public static double integral_trapezoid(Function<Double, Double> f, double a, double b, int m){
+		double h = (b - a) / (double) m;
+		double dx = h;
+		Function<Integer, Double> g = i -> 0.5 * f.apply(a + (i - 1) * dx) + 0.5 * f.apply(a + i * dx);
+		return h * sum___(g, 1, e -> e + 1, m);
+	}
+	
+	
 }

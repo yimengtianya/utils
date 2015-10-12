@@ -1,5 +1,6 @@
 package com.sean.wang.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -118,6 +119,48 @@ public class Sort {
 			arr[index] = temp;
 		}
 	}
+
+	public static <T extends Comparable<T>> void insertionSort(List<T> list) {
+		insertionSort(list, true);
+	}
+	
+	public static <T extends Comparable<T>> void insertionSort(List<T> list, boolean up) {
+		if (list == null || list.size() <= 1) {
+			return ;
+		}
+		for(int j = 1; j < list.size(); j++) {
+			T key = list.get(j);
+			int i = j - 1;
+			while(i >= 0 && (up ? list.get(i).compareTo(key) > 0 : list.get(i).compareTo(key) < 0)) {
+				list.set(i + 1, list.get(i));
+				i--;
+			}
+			list.set(i + 1, key);
+		}
+	}
+	
+	public static <T extends Comparable<T>> void insertion_sort_it(List<T> list){
+		if(list == null || list.size() <= 1) {
+			return;
+		}
+		insertion_sort_it(list, list.size() - 1);
+	}
+	private static <T extends Comparable<T>> void insertion_sort_it(List<T> list, int index){
+		if(index == 0) {
+			return;
+		}
+		insertion_sort_it(list, index - 1);
+		insert(list, index);
+	}
+	private static <T extends Comparable<T>> void insert(List<T> list, int index) {
+		T key = list.get(index);
+		index--;
+		while(index >= 0 &&  key.compareTo(list.get(index)) < 0) {
+			list.set(index + 1, list.get(index));
+			index--;
+		}
+		list.set(index + 1, key);
+	}
 	
 	public static void mergeSort(double[] arr){
 		if(arr == null || arr.length <= 1)
@@ -128,14 +171,6 @@ public class Sort {
 	public static void mergeSort(double[] arr, int m, int n){
 		if(n - m == 0)
 			return;
-		if(n - m == 1){
-			if(arr[m] > arr[n]){
-				double temp = arr[m];
-				arr[m] = arr[n];
-				arr[n] = temp;
-			}
-			return;
-		}
 		int piv = (n + m) / 2;
 		mergeSort(arr, m , piv);
 		mergeSort(arr, piv + 1, n);
@@ -164,7 +199,50 @@ public class Sort {
 				k1++;
 			}
 		}
+	}
+	public static <T extends Comparable<T>> void mergeSort(List<T> list){
+		if (list == null || list.size() <= 1) {
+			return;
+		}
+		mergeSort(list, 0, list.size() - 1);
+	}
+	public static <T extends Comparable<T>> void mergeSort(List<T> list, int s, int e){
+		if(e - s == 0) {
+			return;
+		} 
+		int m = (s + e) / 2;
+		mergeSort(list, s, m);
+		mergeSort(list, m + 1, e);
+		merge(list, s, m, e);
+	}
+	private static <T extends Comparable<T>> void merge(List<T> list, int s, int m, int e) {
+		List<T> list1 = new ArrayList<>();
+		List<T> list2 = new ArrayList<>();
+		for(int i = s; i <= m; i++) {
+			list1.add(list.get(i));
+		}
+		for(int i = m + 1; i <= e; i++) {
+			list2.add(list.get(i));
+		}
+		int k1 = 0;
+		int k2 = 0;
 		
-		
+		for(int i = s; i <= e; i++ ) {
+			if(k1 == list1.size()) {
+				LsUtil.copy(list2, k2, list2.size() - 1, list, i);
+				return;
+			}
+			if(k2 == list2.size()) {
+				LsUtil.copy(list1, k1, list1.size() - 1, list, i);
+				return;
+			}
+			if(list1.get(k1).compareTo(list2.get(k2)) < 0) {
+				list.set(i, list1.get(k1));
+				k1++;
+			}else {
+				list.set(i, list2.get(k2));
+				k2++;
+			}
+		}
 	}
 }

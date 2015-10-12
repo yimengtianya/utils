@@ -27,31 +27,40 @@ public class MathUtilTest extends TestCase{
 		
 		assertEquals(result2, result);
 	}
-	
-	public void testIntegral(){
-		double result = MathUtil.integral(e -> e*e*e, 0, 1, 0.1);
-		System.out.println(result);
-		
-		double result2 = MathUtil.integral(e-> e* e* e * e, 0, 1, 10);
-		System.out.println(result2);
-	}
-	
 	public void test(){
 //		double result = MathUtil.integral(t -> f(t), 0, 0.04, 100);
 //		System.out.println(result);
-//		
-//		double inc = 0.001;
-//		for(double i = 0; i < 0.03;){
-//			double u = u(25, 30, i);
-//			double v = v(25, 30, i);
-//			System.out.println(i + "\t" +u + "\t" + v);
-//			i += inc;
-//		}
+		
+		double inc = 0.001;
+		for(double i = 0; i < 0.02;){
+			double u = u(-10, 16, i);
+			double v = v(-10, 16, i);
+			System.out.println(i + "\t" +u + "\t" + v);
+			i += inc;
+		}
+	}
+	
+	public void testIntegral2(){
+		Function<Double, Double> f = e -> Math.cos(e);
+		
+		double result = MathUtil.integral_trapezoid(f, 0, Math.PI / 2.0, 0.1);
+		System.out.println(result);
+		
+		double result2 = MathUtil.integral_simpson(f, 0, Math.PI / 2.0, 10);
+		System.out.println(result2);
+		
+		double result3 = MathUtil.integral_cotes(f, 0, Math.PI / 2.0, 0.1);
+		System.out.println(result3);
+		
+		double result4 = MathUtil.integral_trapezoid(f, 0, Math.PI / 2.0, 10);
+		System.out.println(result4);
 
+		double result5 = MathUtil.integral_cotes(f, 0, Math.PI / 2.0, 10);
+		System.out.println(result5);
 	}
 	
 	private double f(double t){
-		double end_time = 0.015;
+		double end_time = 0.016;
 		double pk_time = 0.001;
 		double pk_value = 10_000_000;
 		if(t <= 0)

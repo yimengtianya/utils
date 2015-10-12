@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static com.sean.wang.utils.ArgumentCheck.*;
 
 public class ArrUtil<T> {
 	public static double sum(double[] arr){
@@ -108,6 +109,15 @@ public class ArrUtil<T> {
 		}
 		return str;
 	}
+	
+	public static String toString(double[] arr){
+		StringBuilder builder = new StringBuilder();
+		for(double d:arr) {
+			builder.append(d + "\n");
+		}
+		return builder.toString();
+	}
+	
 	public static int count(int[] arr, int t){
 		int count = 0;
 		for(int a:arr){
@@ -118,12 +128,51 @@ public class ArrUtil<T> {
 		return count;
 	}
 	
-	public static double max(double[] arr){
-		double max = Double.MIN_VALUE;
-		for(double d:arr){
-			if(max < d){
-				max = d;
+	public static Counter count(int value){
+		return new Counter(value);
+	}
+	
+	public static class Counter{
+		private int value;
+		
+		public Counter(int value){
+			this.value = value;
+		}
+		
+		public int in(int[] arr){
+			int count = 0;
+			for(int a:arr) {
+				if(a == value) {
+					count++;
+				}
 			}
+			return count;
+		}
+	}
+	
+//	public static double max(double[] arr){
+//		double max = Double.MIN_VALUE;
+//		for(double d:arr){
+//			if(max < d){
+//				max = d;
+//			}
+//		}
+//		return max;
+//	}
+	
+	public static int max(int... arr) {
+		checkArgument(arr != null && arr.length >= 1);
+		int max = arr[0];
+		for(int a:arr) {
+			max = (a > max) ? a : max;
+		}
+		return max;
+	}
+	public static double max(double... arr) {
+		checkArgument(arr != null && arr.length >= 1);
+		double max = arr[0];
+		for(double a:arr) {
+			max = (a > max) ? a : max;
 		}
 		return max;
 	}
@@ -140,6 +189,30 @@ public class ArrUtil<T> {
 		}
 		return max;
 	}
+	 
+	public static double absMax(double... arr){
+		for(int i = 0, len = arr.length; i < len; i++) {
+			arr[i] = (arr[i] > 0)?arr[i]:-arr[i];
+		}
+		return max(arr);
+	}
+	
+	public static int min(int... arr) {
+		checkArgument(arr != null && arr.length >= 1);
+		int min = arr[0];
+		for(int a:arr) {
+			min = (a < min) ? a : min;
+		}
+		return min;
+	}
+	
+	public static int min(int index, int... arr){
+		int[] arr_cp = new int[arr.length]; 
+		System.arraycopy(arr, 0, arr_cp, 0, arr.length);;
+		Arrays.sort(arr_cp);
+		return arr_cp[index];
+	}
+	
 	public static double[] min(double[][] arr){
 		double[] min = new double[arr[0].length];
 		Arrays.fill(min, Double.MAX_VALUE);
@@ -153,12 +226,19 @@ public class ArrUtil<T> {
 		return min;
 	}
 	
-	public static double min(double[] arr){
+	public static double min(double... arr) {
 		double result = Double.MAX_VALUE;
 		for(int i = 0, len = arr.length; i < len; i++)
 			result = (result < arr[i])?result:arr[i];
 		return result;
 	}
+	
+//	public static double min(double[] arr){
+//		double result = Double.MAX_VALUE;
+//		for(int i = 0, len = arr.length; i < len; i++)
+//			result = (result < arr[i])?result:arr[i];
+//		return result;
+//	}
 	public static boolean equal(double[] d1, double[] d2){
 		if(d1.length != d2.length){
 			return false;
@@ -182,13 +262,31 @@ public class ArrUtil<T> {
 		}
 		return result;
 	}
-	public static int[] add(int[] arr, int value){
+	public static int[] append(int[] arr, int value){
 		if(arr == null){
 			arr = new int[0];
 		}
 		int[] result = new int[arr.length + 1];
 		System.arraycopy(arr, 0, result, 0, arr.length);
 		result[arr.length] = value;
+		return result;
+	}
+	public static double[] append(double[] arr, double elem){
+		if(arr == null) {
+			arr = new double[0];
+		}
+		double[] result = new double[arr.length + 1];
+		System.arraycopy(arr, 0, result, 0, arr.length);
+		result[arr.length] = elem;
+		return result;
+	}
+	public static double[] appendTo(double[] arr, double elem) {
+		if(arr == null) {
+			return new double[]{elem};
+		}
+		double[] result = new double[arr.length + 1];
+		System.arraycopy(arr, 0, result, 1, arr.length);
+		result[0] = elem;
 		return result;
 	}
 	
@@ -210,7 +308,7 @@ public class ArrUtil<T> {
 		return result;
 	}
 	
-	public static int share(int[] arr1, int[] arr2){
+	public static int shareCount(int[] arr1, int[] arr2){
 		int count = 0;
 		for(int i = 0; i < arr1.length; i++){
 			for(int j = 0; j < arr2.length; j++){
@@ -417,4 +515,39 @@ public class ArrUtil<T> {
 		}
 		return toArray(list);
 	}
+	
+	public static double[][] select(double[][] arr, int... indexs) {
+		double[][] result = new double[indexs.length][];
+		for(int i = 0, len = indexs.length; i < len; i++) {
+			result[i] = arr[indexs[i]];
+		}
+		return result;
+	}
+	
+	public static int[] select(int[] arr, int... indexs) {
+		int[] result = new int[indexs.length];
+		for(int i = 0;i < indexs.length; i++) {
+			result[i] = arr[indexs[i]];
+		}
+		return result;
+	}
+	
+	public static int findNext(int[] arr, int e){
+		for(int i = 0, len = arr.length; i < len; i++) {
+			if(e == arr[i]) {
+				return arr[(i + 1) % len];
+			}
+		}
+		return -1;
+	}
+	public static int findPre(int[] arr, int e){
+		for(int i = 0, len = arr.length; i < len; i++) {
+			if(e == arr[i]) {
+				return arr[(i - 1 + len) % len];
+			}
+		}
+		return -1;
+	}
+	
+
 }

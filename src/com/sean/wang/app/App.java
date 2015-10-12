@@ -227,8 +227,20 @@ public class App {
 //		s.add(1);
 //		s.add(1);
 	
-		double re  =new App().integral(e -> 1/Math.sqrt(Math.abs(e*e - 1)), -0.05, 1, 0.1);
-		System.out.println(re);
+//		double re  =new App().integral(e -> 1/Math.sqrt(Math.abs(e*e - 1)), -0.05, 1, 0.1);
+//		System.out.println(re);
+		
+//		System.out.println(321 * 161 + 160);
+		
+//		Integer in = 0;
+//		add(in);
+//		System.out.println(in);
+		
+		System.out.println(Math.tan(Math.PI / 4.0));
+	}
+	
+	public static void add(Integer in){
+	
 	}
 	
 	public double integral(Function<Double, Double> f, double a, double b, double dx){
